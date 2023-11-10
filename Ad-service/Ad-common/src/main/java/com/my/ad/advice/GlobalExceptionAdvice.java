@@ -11,9 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalExceptionAdvice {
 
+    // 全局异常处理类
+
     @ExceptionHandler(value = AdException.class)
     public CommonResponse<String> handlerAdException(HttpServletRequest req,
                                                      AdException ex) {
+        // 处理AdException异常的方法
+
         CommonResponse<String> response = new CommonResponse<>(-1,
                 "business error");
         response.setData(ex.getMessage());
