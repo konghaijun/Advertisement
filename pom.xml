@@ -8,11 +8,11 @@
     <artifactId>Advertisement</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
     <modules>
         <module>Ad-eureka</module>
         <module>Ad-gateway</module>
         <module>Ad-service</module>
-        <module>Ad-sponsor</module>
     </modules>
 
     <name>Advertisement</name>
