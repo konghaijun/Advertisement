@@ -12,6 +12,7 @@
         <module>Ad-eureka</module>
         <module>Ad-gateway</module>
         <module>Ad-service</module>
+        <module>Ad-sponsor</module>
     </modules>
 
     <name>Advertisement</name>
