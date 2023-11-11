@@ -5,9 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 
-/**
- * Created by Qinyi.
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
