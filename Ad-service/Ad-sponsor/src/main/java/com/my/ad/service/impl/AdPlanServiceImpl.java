@@ -23,9 +23,8 @@ import java.util.Optional;
 
 @Service
 public class AdPlanServiceImpl implements IAdPlanService {
-
-    private final AdUserRepository userRepository;
-    private final AdPlanRepository planRepository;
+    private final AdUserRepository userRepository;  // 用户数据仓库
+    private final AdPlanRepository planRepository;  // 广告计划数据仓库
 
     @Autowired
     public AdPlanServiceImpl(AdUserRepository userRepository,
@@ -50,6 +49,7 @@ public class AdPlanServiceImpl implements IAdPlanService {
             throw new AdException(Constants.ErrorMsg.CAN_NOT_FIND_RECORD);
         }
 
+        // 确保要创建的广告计划名称在指定用户下是唯一的
         AdPlan oldPlan = planRepository.findByUserIdAndPlanName(
                 request.getUserId(), request.getPlanName()
         );
@@ -57,6 +57,7 @@ public class AdPlanServiceImpl implements IAdPlanService {
             throw new AdException(Constants.ErrorMsg.SAME_NAME_PLAN_ERROR);
         }
 
+        // 创建新的广告计划并保存到数据库
         AdPlan newAdPlan = planRepository.save(
                 new AdPlan(request.getUserId(), request.getPlanName(),
                         CommonUtils.parseStringDate(request.getStartDate()),
@@ -90,6 +91,7 @@ public class AdPlanServiceImpl implements IAdPlanService {
             throw new AdException(Constants.ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
+        // 查找要更新的广告计划
         AdPlan plan = planRepository.findByIdAndUserId(
                 request.getId(), request.getUserId()
         );
@@ -97,6 +99,7 @@ public class AdPlanServiceImpl implements IAdPlanService {
             throw new AdException(Constants.ErrorMsg.CAN_NOT_FIND_RECORD);
         }
 
+        // 根据请求更新广告计划信息
         if (request.getPlanName() != null) {
             plan.setPlanName(request.getPlanName());
         }
@@ -125,6 +128,7 @@ public class AdPlanServiceImpl implements IAdPlanService {
             throw new AdException(Constants.ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
+        // 查找要删除的广告计划
         AdPlan plan = planRepository.findByIdAndUserId(
                 request.getId(), request.getUserId()
         );
@@ -132,8 +136,10 @@ public class AdPlanServiceImpl implements IAdPlanService {
             throw new AdException(Constants.ErrorMsg.CAN_NOT_FIND_RECORD);
         }
 
+        // 将广告计划状态设置为无效并更新修改时间
         plan.setPlanStatus(CommonStatus.INVALID.getStatus());
         plan.setUpdateTime(new Date());
         planRepository.save(plan);
     }
+
 }
