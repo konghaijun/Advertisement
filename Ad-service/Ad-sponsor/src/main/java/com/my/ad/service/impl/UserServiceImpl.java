@@ -30,16 +30,18 @@ public class UserServiceImpl implements IUserService {
     public CreateUserResponse createUser(CreateUserRequest request)
             throws AdException {
 
+        // 验证请求参数是否有效
         if (!request.validate()) {
             throw new AdException(Constants.ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
-        AdUser oldUser = userRepository.
-                findByUsername(request.getUsername());
+        // 根据用户名查找用户，若已存在则抛出同名错误异常
+        AdUser oldUser = userRepository.findByUsername(request.getUsername());
         if (oldUser != null) {
             throw new AdException(Constants.ErrorMsg.SAME_NAME_ERROR);
         }
 
+        // 保存新用户信息，并返回创建用户的响应
         AdUser newUser = userRepository.save(new AdUser(
                 request.getUsername(),
                 CommonUtils.md5(request.getUsername())
@@ -50,4 +52,5 @@ public class UserServiceImpl implements IUserService {
                 newUser.getCreateTime(), newUser.getUpdateTime()
         );
     }
+
 }
