@@ -168,13 +168,17 @@ public class AdUnitServiceImpl implements IAdUnitService {
     public AdUnitDistrictResponse createUnitDistrict(
             AdUnitDistrictRequest request) throws AdException {
 
+        // 获取请求中的广告单元 ID 列表
         List<Long> unitIds = request.getUnitDistricts().stream()
                 .map(AdUnitDistrictRequest.UnitDistrict::getUnitId)
                 .collect(Collectors.toList());
+
+        // 检查关联的广告单元是否存在
         if (!isRelatedUnitExist(unitIds)) {
             throw new AdException(Constants.ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
+        // 创建广告单元地域定向信息并保存到数据库
         List<AdUnitDistrict> unitDistricts = new ArrayList<>();
         request.getUnitDistricts().forEach(d -> unitDistricts.add(
                 new AdUnitDistrict(d.getUnitId(), d.getProvince(),
@@ -184,6 +188,7 @@ public class AdUnitServiceImpl implements IAdUnitService {
                 .stream().map(AdUnitDistrict::getId)
                 .collect(Collectors.toList());
 
+        // 返回包含新创建记录 ID 的响应对象
         return new AdUnitDistrictResponse(ids);
     }
 
@@ -191,6 +196,7 @@ public class AdUnitServiceImpl implements IAdUnitService {
     public CreativeUnitResponse createCreativeUnit(
             CreativeUnitRequest request) throws AdException {
 
+        // 获取请求中的广告单元 ID 列表和创意 ID 列表
         List<Long> unitIds = request.getUnitItems().stream()
                 .map(CreativeUnitRequest.CreativeUnitItem::getUnitId)
                 .collect(Collectors.toList());
@@ -198,10 +204,12 @@ public class AdUnitServiceImpl implements IAdUnitService {
                 .map(CreativeUnitRequest.CreativeUnitItem::getCreativeId)
                 .collect(Collectors.toList());
 
-        if (!(isRelatedUnitExist(unitIds) && isRelatedUnitExist(creativeIds))) {
+        // 检查关联的广告单元和创意是否存在
+        if (!(isRelatedUnitExist(unitIds) && isRelatedCreativeExist(creativeIds))) {
             throw new AdException(Constants.ErrorMsg.REQUEST_PARAM_ERROR);
         }
 
+        // 创建创意与广告单元关联关系并保存到数据库
         List<CreativeUnit> creativeUnits = new ArrayList<>();
         request.getUnitItems().forEach(i -> creativeUnits.add(
                 new CreativeUnit(i.getCreativeId(), i.getUnitId())
@@ -212,26 +220,32 @@ public class AdUnitServiceImpl implements IAdUnitService {
                 .map(CreativeUnit::getId)
                 .collect(Collectors.toList());
 
+        // 返回包含新创建记录 ID 的响应对象
         return new CreativeUnitResponse(ids);
     }
 
+    // 检查广告单元是否存在的辅助方法
     private boolean isRelatedUnitExist(List<Long> unitIds) {
 
         if (CollectionUtils.isEmpty(unitIds)) {
             return false;
         }
 
+        // 通过 ID 列表查询数据库，比较结果数量与去重后的数量是否一致
         return unitRepository.findAllById(unitIds).size() ==
                 new HashSet<>(unitIds).size();
     }
 
+    // 检查创意是否存在的辅助方法
     private boolean isRelatedCreativeExist(List<Long> creativeIds) {
 
         if (CollectionUtils.isEmpty(creativeIds)) {
             return false;
         }
 
+        // 通过 ID 列表查询数据库，比较结果数量与去重后的数量是否一致
         return creativeRepository.findAllById(creativeIds).size() ==
                 new HashSet<>(creativeIds).size();
     }
+
 }
