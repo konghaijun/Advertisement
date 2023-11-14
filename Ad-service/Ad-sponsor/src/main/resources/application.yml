@@ -14,7 +14,7 @@ spring:
       hibernate.format_sql: true
     open-in-view: false
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/ad-sponsor?autoReconnect=true
+    url: jdbc:mysql://47.106.33.141:3306/ad-sponsor?autoReconnect=true
     username: Ad-sponsor
     password: Ad-sponsor
     tomcat:
